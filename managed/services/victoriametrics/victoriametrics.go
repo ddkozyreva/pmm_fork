@@ -168,7 +168,7 @@ func (svc *Service) ID() string {
 
 // updateConfiguration updates VictoriaMetrics configuration.
 func (svc *Service) updateConfiguration(ctx context.Context) error {
-	if svc.params.ExternalVM() && !svc.haService.Params().Enabled {
+	if svc.params.ExternalVM() {
 		return nil
 	}
 	start := time.Now()
@@ -366,10 +366,10 @@ func (svc *Service) populateConfig(cfg *config.Config) error {
 		if cfg.GlobalConfig.ScrapeTimeout == 0 {
 			cfg.GlobalConfig.ScrapeTimeout = ScrapeTimeout(resolutions.LR)
 		}
-		if !svc.params.ExternalVM() && !svc.haService.Params().Enabled {
+		if !svc.params.ExternalVM() {
 			cfg.ScrapeConfigs = append(cfg.ScrapeConfigs, scrapeConfigForVictoriaMetrics(svc.l, resolutions.HR, svc.params))
 		}
-		if svc.params.ExternalVM() && !svc.haService.Params().Enabled {
+		if svc.params.ExternalVM() {
 			cfg.ScrapeConfigs = append(cfg.ScrapeConfigs, scrapeConfigForInternalVMAgent(resolutions.HR, svc.baseURL.Host))
 		}
 		cfg.ScrapeConfigs = append(cfg.ScrapeConfigs, scrapeConfigForVMAlert(resolutions.HR, pmmServerNodeName))
