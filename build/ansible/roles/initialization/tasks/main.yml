@@ -111,6 +111,7 @@
     register: pmm_ready
     until: pmm_ready.status == 200
     ignore_errors: true
+    when: lookup('env','PMM_POSTGRES_ADDR') == '127.0.0.1:5432' and lookup('env','PMM_DISABLE_BUILTIN_POSTGRES') != '1'
 
   - name: Initialize admin password for AMI if needed
     include_role:
